@@ -22,7 +22,6 @@ const HomePage = () => {
   useEffect(() => {
     axios.get("http://localhost:3334/post").then((response) => {
       setPosts(response.data);
-      console.log(typeof response.data[0].title);
     });
   }, []);
 
