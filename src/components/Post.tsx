@@ -1,27 +1,33 @@
 import { Link } from "react-router-dom";
+import ReactTimeAgo from "react-time-ago";
 
-const Post = () => {
+const Post = ({ _id, title, summary, cover, createdAt, author }) => {
+  const img = cover;
   return (
-    <div className=" flex gap-2 items-start justify-center font-poppins my-7">
-      <img
-        src="https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp"
-        alt="first post"
-        className="max-w-64 rounded cursor-pointer"
-      />
-      <div className="max-w-3xl">
-        <h3 className="text-2xl font-semibold cursor-pointer">
-          The first post ever!
-        </h3>
-        <p className=" mt-2 font-light">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias
-          suscipit reiciendis recusandae molestiae, assumenda accusamus numquam
-          odit quam ullam quod. Similique assumenda magni neque!
-        </p>
-        <p className="text-sm  font-extralight mt-1 justify-end flex gap-2 items-center">
+    <div className="items-start grid gap-5 mx-auto justify-items-start font-poppins my-7 sm:flex ">
+      <div className="w-[280px] sm:max-w-72 max-h-64 overflow-hidden">
+        <Link to={`/post/${_id}`}>
+          <img
+            src={"http://localhost:3334/" + img}
+            alt="cover"
+            className="object-fill rounded cursor-pointer"
+          />
+        </Link>
+      </div>
+      <div className="w-[280px] lg:w-[600px]">
+        <Link to={`/post/${_id}`}>
+          <h3 className="text-lg lg:text-2xl font-semibold cursor-pointer">
+            {title}
+          </h3>
+        </Link>
+        <p className="text-sm lg:text-base mt-2 font-light">{summary}</p>
+        <p className="text-xs lg:text-sm font-extralight mt-1 justify-end flex gap-2 items-center">
           <Link to="/author" className="cursor-pointer block italic">
-            Author Name
+            {author.username}
           </Link>
-          <time className="text-xs">2024-10-01 14:14</time>
+          <time className="text-xs">
+            <ReactTimeAgo date={createdAt} />
+          </time>
         </p>
       </div>
     </div>

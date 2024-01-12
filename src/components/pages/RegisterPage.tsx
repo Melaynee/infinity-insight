@@ -4,6 +4,7 @@ import axios from "axios";
 const Registration = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const register = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -11,6 +12,7 @@ const Registration = () => {
     await axios
       .post("http://localhost:3334/registration", {
         email,
+        username,
         password,
       })
       .then(function (response) {
@@ -55,6 +57,30 @@ const Registration = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 pl-2"
+              />
+            </div>
+          </div>
+
+          {/* Username */}
+          <div>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Username
+              </label>
+            </div>
+            <div className="mt-2">
+              <input
+                id="username"
+                name="username"
+                required
+                minLength={3}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                type="username"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 pl-2"
               />
             </div>
