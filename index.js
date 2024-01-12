@@ -92,7 +92,7 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
       summary,
       content,
       cover: newPath,
-      author: decoded._id,
+      author: decoded.id,
     });
     res.json({ postDoc });
   } catch (error) {
@@ -137,7 +137,7 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor =
-      JSON.stringify(postDoc.author) === JSON.stringify(decoded._id);
+      JSON.stringify(postDoc.author) === JSON.stringify(decoded.id);
     if (!isAuthor) {
       return res.status(400).json({ message: "You are not the author" });
     }
@@ -145,7 +145,7 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
       title,
       summary,
       content,
-      cover: newPath ? newPath : postDoc.cover,
+      cover: newPath || postDoc.cover,
     });
     res.json(postDoc);
   } catch (error) {
