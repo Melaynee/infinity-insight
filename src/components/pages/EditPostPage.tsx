@@ -37,22 +37,25 @@ const EditPostPage = () => {
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState("");
+  const [files, setFiles] = useState<FileList | null>(null);
   const [redirect, setRedirect] = useState(false);
 
   const updatePost = async (e: React.FormEvent<HTMLFormElement>) => {
     const data = new FormData();
-    data.set("title", title);
-    data.set("summary", summary);
-    data.set("content", content);
-    data.set("id", id);
-    if (files?.[0]) data.set("file", files[0]);
+    data.set("title", title ?? "");
+    data.set("summary", summary ?? "");
+    data.set("content", content ?? "");
+    data.set("id", id ?? "");
+
+    if (files?.[0]) {
+      data.set("file", files[0]);
+    }
 
     e.preventDefault();
 
     await axios
       .put("http://localhost:3334/post", data, { withCredentials: true })
-      .then((response) => {
+      .then(() => {
         setRedirect(true);
       })
       .catch((err) => alert("Error! " + err.response.data.message));
@@ -67,6 +70,7 @@ const EditPostPage = () => {
         setSummary(postInfo.data.summary);
       })
       .catch((err) => alert("Error! " + err.response.data.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (redirect) return <Navigate to={`/post/${id}`} />;

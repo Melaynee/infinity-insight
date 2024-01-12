@@ -2,22 +2,28 @@ import axios from "axios";
 import { formatISO9075 } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { UserContext } from "../../UserContext";
+import { UserContext, UserContextProps } from "../../UserContext";
+import { PostProps } from "./HomePage";
 
 const PostPage = () => {
-  const [info, setInfo] = useState("");
-  const { userInfo } = useContext(UserContext);
+  const [info, setInfo] = useState<PostProps | null>(null);
+  const { userInfo } = useContext(UserContext) as UserContextProps;
 
   const { id } = useParams();
   useEffect(() => {
     axios
       .get(`http://localhost:3334/post/${id}`)
       .then((res) => setInfo(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => alert("Error! " + err.response.data.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!info) {
-    return "";
+    return (
+      <div className="100vw white font-bold text-center text-slate-900">
+        Loading...
+      </div>
+    );
   }
   return (
     <div className="container mx-auto my-10 font-poppins">

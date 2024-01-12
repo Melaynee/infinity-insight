@@ -4,21 +4,36 @@ import axios from "axios";
 import { UserContext } from "../UserContext";
 
 const Header = () => {
-  const { setUserInfo, userInfo } = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3334/profile", { withCredentials: true })
-      .then((userInfo) => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3334/profile", {
+          withCredentials: true,
+        });
+        const userInfo = response.data;
         setUserInfo(userInfo);
-      });
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Ensure that userContext is defined before accessing its properties
+  if (!userContext) {
+    return null; // Or handle the absence of context in some way
+  }
+
+  const { setUserInfo, userInfo } = userContext;
 
   const email = userInfo?.email;
 
   const logout = () => {
     axios.post("http://localhost:3334/logout", {}, { withCredentials: true });
-    setUserInfo(null);
+    setUserInfo(undefined);
   };
 
   return (

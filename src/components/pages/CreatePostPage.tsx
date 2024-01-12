@@ -37,7 +37,7 @@ const CreatePostPage = () => {
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState("");
+  const [files, setFiles] = useState<FileList | null>(null);
   const [redirect, setRedirect] = useState(false);
 
   const createPost = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,7 +48,8 @@ const CreatePostPage = () => {
     data.set("summary", summary);
     if (content.length > 200) data.set("content", content);
     else return alert("Minimum length is 201 symbol.");
-    data.set("file", files[0]);
+    if (files?.length) data.set("file", files[0]);
+    else return alert("Image is required.");
 
     await axios
       .post("http://localhost:3334/post", data, { withCredentials: true })
@@ -82,7 +83,8 @@ const CreatePostPage = () => {
         <input
           type="file"
           className="my-2"
-          onChange={(e) => setFiles(e.target.files)}
+          required
+          onChange={(e) => setFiles(e.target?.files)}
         />
         <ReactQuill
           modules={modules}

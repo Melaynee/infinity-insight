@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../../UserContext";
+import { UserContext, UserContextProps } from "../../UserContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
-  const { setUserInfo } = useContext(UserContext);
+  const { setUserInfo } = useContext(UserContext) as UserContextProps;
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,8 +25,7 @@ const LoginPage = () => {
         setRedirect(true);
       })
       .catch((error) => {
-        alert("Login failed!");
-        console.log(error);
+        alert("Login failed! " + error.response.data.message);
       });
   };
 

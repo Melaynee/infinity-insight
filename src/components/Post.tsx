@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import { formatISO9075 } from "date-fns";
 
-const Post = ({ _id, title, summary, cover, createdAt, author }) => {
+interface Post {
+  _id: string;
+  title: string;
+  summary: string;
+  cover: string;
+  createdAt: string;
+  author: {
+    username: string;
+  };
+}
+
+const Post = ({ _id, title, summary, cover, createdAt, author }: Post) => {
   const img = cover;
   return (
     <div className="items-start grid gap-5 mx-auto justify-items-start font-poppins my-7 sm:flex ">
