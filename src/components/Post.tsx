@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ReactTimeAgo from "react-time-ago";
+import { formatISO9075 } from "date-fns";
 
 const Post = ({ _id, title, summary, cover, createdAt, author }) => {
   const img = cover;
@@ -25,9 +25,7 @@ const Post = ({ _id, title, summary, cover, createdAt, author }) => {
           <Link to="/author" className="cursor-pointer block italic">
             {author.username}
           </Link>
-          <time className="text-xs">
-            <ReactTimeAgo date={createdAt} />
-          </time>
+          <time className="text-xs">{formatISO9075(new Date(createdAt))}</time>
         </p>
       </div>
     </div>

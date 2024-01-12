@@ -2,6 +2,7 @@ import axios from "axios";
 import Post from "../Post";
 import { useEffect, useState } from "react";
 
+
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
@@ -12,7 +13,7 @@ const HomePage = () => {
 
   return (
     <div className="container mx-auto grid">
-      {posts.length > 0 && posts.map((post) => <Post {...post} />)}
+      {posts.length > 0 && posts.map((post) => <Post key={post._id} {...post} />)}
     </div>
   );
 };

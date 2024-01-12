@@ -1,8 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 const modules = {
   toolbar: [
@@ -33,33 +32,46 @@ const formats = [
   "image",
 ];
 
-const CreatePostPage = () => {
+const EditPostPage = () => {
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState("");
   const [redirect, setRedirect] = useState(false);
 
-  const createPost = async (e: React.FormEvent<HTMLFormElement>) => {
+  const updatePost = (e: React.FormEvent<HTMLFormElement>) => {
     const data = new FormData();
     data.set("title", title);
     data.set("summary", summary);
     data.set("content", content);
-    data.set("file", files[0]);
+    data.set("id", id);
+    if (files?.[0]) data.set("file", files[0]);
 
     e.preventDefault();
 
-    await axios
-      .post("http://localhost:3334/post", data, { withCredentials: true })
-      .then(() => {
+    axios
+      .put("http://localhost:3334/post", data, { withCredentials: true })
+      .then((response) => {
+        console.log(response.data);
         setRedirect(true);
       })
       .catch((err) => console.log(err));
   };
-  if (redirect) return <Navigate to="/" />;
+
+  useEffect(() => {
+    axios.get(`http://localhost:3334/post/${id}`).then((postInfo) => {
+      setTitle(postInfo.data.title);
+      setContent(postInfo.data.content);
+      setSummary(postInfo.data.summary);
+    });
+  }, []);
+
+  if (redirect) return <Navigate to={`/post/${id}`} />;
+
   return (
     <div className="container mx-auto my-7">
-      <form className="flex flex-col " onSubmit={createPost}>
+      <form className="flex flex-col " onSubmit={updatePost}>
         <input
           type="title"
           placeholder="Title"
@@ -86,11 +98,11 @@ const CreatePostPage = () => {
           onChange={(e) => setContent(e)}
         />
         <button className="p-2 bg-slate-500 my-2 hover:bg-slate-400">
-          <span className="font-bold  text-slate-50">Create post</span>
+          <span className="font-bold  text-slate-50">Update post</span>
         </button>
       </form>
     </div>
   );
 };
 
-export default CreatePostPage;
+export default EditPostPage;

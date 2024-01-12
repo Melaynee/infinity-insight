@@ -31,11 +31,11 @@ const PostPage = () => {
         </button>
       )}
       <h2 className="italic my-10">{info.summary}</h2>
-      <div className="w-[964px] border-r-2">
+      <div className="sm:w-[664px] lg:w-[964px] border-r-2">
         <img
           src={`http://localhost:3334/${info.cover}`}
           alt=""
-          className="h-[632px] mx-auto"
+          className="sm:h-[400px] lg:h-[632px] mx-auto"
         />
         <div
           className="my-10"
