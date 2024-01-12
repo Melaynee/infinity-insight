@@ -57,18 +57,23 @@ app.post("/auth", async (req, res) => {
   }
 });
 
+// Auth
 app.get("/profile", async (req, res) => {
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw err;
-    res.json(info);
-  });
+  try {
+    const decoded = jwt.verify(token, secret);
+    res.json(decoded);
+  } catch (error) {
+    return;
+  }
 });
 
+// Logout
 app.post("/logout", async (req, res) => {
   res.cookie("token", "").json("ok");
 });
 
+// Post create
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
@@ -78,21 +83,26 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   fs.renameSync(path, newPath);
 
   const { token } = req.cookies;
+  try {
+    const decoded = jwt.verify(token, secret);
 
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
     const { title, summary, content } = req.body;
     const postDoc = await Post.create({
       title,
       summary,
       content,
       cover: newPath,
-      author: info.id,
+      author: decoded._id,
     });
     res.json({ postDoc });
-  });
+  } catch (error) {
+    return res.status(401).json({
+      message: "You are not authorized!",
+    });
+  }
 });
 
+// Get all posts
 app.get("/post", async (req, res) => {
   const posts = await Post.find()
     .populate("author", ["username"])
@@ -102,12 +112,14 @@ app.get("/post", async (req, res) => {
   res.json(posts);
 });
 
+// Get post by id
 app.get("/post/:id", async (req, res) => {
   const { id } = req.params;
   const postDoc = await Post.findById(id).populate("author", ["username"]);
   res.json(postDoc);
 });
 
+// Edit post
 app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
   let newPath = null;
   if (req.file) {
@@ -119,13 +131,15 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
   }
 
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
+  try {
+    const decoded = jwt.verify(token, secret);
+
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
-    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    const isAuthor =
+      JSON.stringify(postDoc.author) === JSON.stringify(decoded._id);
     if (!isAuthor) {
-      return res.status(400).json("you are not the author");
+      return res.status(400).json({ message: "You are not the author" });
     }
     await postDoc.updateOne({
       title,
@@ -133,9 +147,12 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
       content,
       cover: newPath ? newPath : postDoc.cover,
     });
-
     res.json(postDoc);
-  });
+  } catch (error) {
+    return res.status(401).json({
+      message: "You are not authorized!",
+    });
+  }
 });
 
 // Cmm9vCo4kxL7O4FS
