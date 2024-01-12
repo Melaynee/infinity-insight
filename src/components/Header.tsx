@@ -11,9 +11,6 @@ const Header = () => {
       .get("http://localhost:3334/profile", { withCredentials: true })
       .then((userInfo) => {
         setUserInfo(userInfo);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   }, []);
 

@@ -41,20 +41,21 @@ const CreatePostPage = () => {
   const [redirect, setRedirect] = useState(false);
 
   const createPost = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const data = new FormData();
     data.set("title", title);
     data.set("summary", summary);
-    data.set("content", content);
+    if (content.length > 200) data.set("content", content);
+    else return alert("Minimum length is 201 symbol.");
     data.set("file", files[0]);
-
-    e.preventDefault();
 
     await axios
       .post("http://localhost:3334/post", data, { withCredentials: true })
       .then(() => {
         setRedirect(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => alert("Error! " + err.response.data.message));
   };
   if (redirect) return <Navigate to="/" />;
   return (
@@ -64,6 +65,8 @@ const CreatePostPage = () => {
           type="title"
           placeholder="Title"
           className="p-2 my-1"
+          minLength={10}
+          maxLength={200}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -72,6 +75,8 @@ const CreatePostPage = () => {
           placeholder="Summary"
           className="p-2 my-1"
           value={summary}
+          minLength={10}
+          maxLength={200}
           onChange={(e) => setSummary(e.target.value)}
         />
         <input

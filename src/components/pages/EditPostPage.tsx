@@ -40,7 +40,7 @@ const EditPostPage = () => {
   const [files, setFiles] = useState("");
   const [redirect, setRedirect] = useState(false);
 
-  const updatePost = (e: React.FormEvent<HTMLFormElement>) => {
+  const updatePost = async (e: React.FormEvent<HTMLFormElement>) => {
     const data = new FormData();
     data.set("title", title);
     data.set("summary", summary);
@@ -50,21 +50,23 @@ const EditPostPage = () => {
 
     e.preventDefault();
 
-    axios
+    await axios
       .put("http://localhost:3334/post", data, { withCredentials: true })
       .then((response) => {
-        console.log(response.data);
         setRedirect(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => alert("Error! " + err.response.data.message));
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:3334/post/${id}`).then((postInfo) => {
-      setTitle(postInfo.data.title);
-      setContent(postInfo.data.content);
-      setSummary(postInfo.data.summary);
-    });
+    axios
+      .get(`http://localhost:3334/post/${id}`)
+      .then((postInfo) => {
+        setTitle(postInfo.data.title);
+        setContent(postInfo.data.content);
+        setSummary(postInfo.data.summary);
+      })
+      .catch((err) => alert("Error! " + err.response.data.message));
   }, []);
 
   if (redirect) return <Navigate to={`/post/${id}`} />;
