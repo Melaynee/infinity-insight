@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <div className="bg-slate-500 mt-16">
       <div className="container mx-auto text-slate-50 p-8 md:p-2">
-        <div className="grid grid-cols-1 items-center md:grid-cols-2 mb-10">
+        <div className="grid grid-cols-1 items-center md:grid-cols-2 ">
           <div className="flex justify-around md:grid grid-cols-2 gap-4 items-center">
             <Link target="_blank" to="https://github.com/Melaynee">
               <SlSocialGithub className="block mx-auto" size={26} />
