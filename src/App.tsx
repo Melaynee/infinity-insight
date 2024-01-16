@@ -7,6 +7,7 @@ import CreatePostPage from "./components/pages/CreatePostPage";
 import { UserContextProvider } from "./UserContext";
 import PostPage from "./components/pages/PostPage";
 import EditPostPage from "./components/pages/EditPostPage";
+import AboutPage from "./components/pages/AboutPage";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/create" element={<CreatePostPage />} />
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/edit/:id" element={<EditPostPage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Route>
       </Routes>
     </UserContextProvider>

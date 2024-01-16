@@ -20,7 +20,7 @@ const Header = () => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // Ensure that userContext is defined before accessing its properties
   if (!userContext) {
