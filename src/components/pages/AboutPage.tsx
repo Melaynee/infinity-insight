@@ -1,12 +1,31 @@
-import React from "react";
 import avatar from "../../assets/photo.jpeg";
 import banner from "../../assets/1500x500.jpg";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FaLink } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
 import { BiMessage } from "react-icons/bi";
+import { useState } from "react";
 
 const AboutPage = () => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  if (showModal) {
+    return (
+      <div
+        className="bg-slate-900  absolute w-screen h-screen"
+        onClick={() => {
+          setShowModal(!showModal);
+        }}
+      >
+        <img
+          src={avatar}
+          alt=""
+          className="max-w-2xl mx-auto relative top-[10%]"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="font-poppins container mx-auto">
       <div className="border-b-2">
@@ -15,11 +34,17 @@ const AboutPage = () => {
             <img src={banner} alt="" className="" />
           </div>
           <div className="flex justify-between relative lg:-top-16">
-            <img
-              src={avatar}
-              alt=""
-              className="w-28 rounded-full relative -top-12 left-4 border-4 border-white md:w-36 lg:w-72"
-            />
+            <button
+              onClick={() => {
+                setShowModal(!showModal);
+              }}
+            >
+              <img
+                src={avatar}
+                alt=""
+                className="w-28 rounded-full relative -top-12 left-4 border-4 border-white md:w-36 lg:w-72"
+              />
+            </button>
             <div className="mr-2 mt-2 items-center flex gap-2 relative -top-8">
               <button className="border-2 rounded-full p-3">
                 <BsThreeDots />
