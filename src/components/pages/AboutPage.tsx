@@ -91,9 +91,6 @@ const AboutPage = () => {
           </li>
         </ul>
       </div>
-      <div className="mx-4">
-        <h3></h3>
-      </div>
     </div>
   );
 };
