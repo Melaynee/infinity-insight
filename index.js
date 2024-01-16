@@ -9,6 +9,7 @@ const fs = require("fs");
 
 const User = require("./models/User.js");
 const Post = require("./models/Post.js");
+const Contact = require("./models/Contact.js");
 
 const app = express();
 const uploadMiddleware = multer({ dest: "./uploads" });
@@ -159,6 +160,24 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
   } catch (error) {
     return res.status(401).json({
       message: "You are not authorized!",
+    });
+  }
+});
+
+app.post("/contact", async (req, res) => {
+  try {
+    const { email, subject, message } = req.body;
+    const contactDoc = await Contact.create({
+      email,
+      subject,
+      message,
+    });
+    res.json({
+      contactDoc,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Bad request!",
     });
   }
 });
