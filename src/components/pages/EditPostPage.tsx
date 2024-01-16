@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { Navigate, useParams } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const modules = {
   toolbar: [
@@ -56,9 +57,10 @@ const EditPostPage = () => {
     await axios
       .put("http://localhost:3334/post", data, { withCredentials: true })
       .then(() => {
-        setRedirect(true);
+        toast.success("Edit confirmed!");
+        setTimeout(() => setRedirect(true), 1000);
       })
-      .catch((err) => alert("Error! " + err.response.data.message));
+      .catch((err) => toast.error(err.response.data.message));
   };
 
   useEffect(() => {
@@ -77,6 +79,7 @@ const EditPostPage = () => {
 
   return (
     <div className="container mx-auto my-7">
+      <Toaster />
       <form className="flex flex-col " onSubmit={updatePost}>
         <input
           type="title"

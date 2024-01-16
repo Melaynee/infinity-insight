@@ -14,7 +14,7 @@ const AboutPage = () => {
       <div
         className="bg-slate-900  absolute w-screen h-screen"
         onClick={() => {
-          setShowModal(!showModal);
+          setShowModal(false);
         }}
       >
         <img

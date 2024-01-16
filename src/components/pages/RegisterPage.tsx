@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const Registration = () => {
   const [email, setEmail] = useState("");
@@ -15,22 +16,22 @@ const Registration = () => {
         username,
         password,
       })
-      .then(function (response) {
-        alert("Registration complete!");
-        console.log(response);
+      .then(function () {
+        toast.success("Registration complete!");
       })
       .catch(function (error) {
-        alert("Registration failed!");
-        console.log(error);
+        toast.error("Registration failed!" + error);
       });
   };
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <Toaster />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-slate-700">
           Sign up to your account
         </h2>
+        Toaster
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

@@ -3,6 +3,7 @@ import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Navigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const modules = {
   toolbar: [
@@ -54,13 +55,15 @@ const CreatePostPage = () => {
     await axios
       .post("http://localhost:3334/post", data, { withCredentials: true })
       .then(() => {
-        setRedirect(true);
+        toast.success("Post created!");
+        setTimeout(() => setRedirect(true), 1000);
       })
-      .catch((err) => alert("Error! " + err.response.data.message));
+      .catch((err) => toast.error(err.response.data.message));
   };
   if (redirect) return <Navigate to="/" />;
   return (
     <div className="container mx-auto my-7">
+      <Toaster />
       <form className="flex flex-col " onSubmit={createPost}>
         <input
           type="title"
