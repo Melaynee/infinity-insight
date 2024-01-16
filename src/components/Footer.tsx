@@ -33,7 +33,7 @@ const Footer = () => {
           </div>
           <div className="my-6 grid text-center font-poppins md:flex-col gap-4">
             <Link to={"/about"}>About</Link>
-            <Link to={"/"}>Contact us</Link>
+            <Link to={"/contact"}>Contact us</Link>
           </div>
         </div>
         <h3 className="text-center">©2024 Infinity Insight Hub</h3>
