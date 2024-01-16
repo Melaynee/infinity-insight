@@ -5,6 +5,7 @@ import { FaLink } from "react-icons/fa6";
 import { BiMessage } from "react-icons/bi";
 import { useState } from "react";
 import AboutMenu from "../AboutMenu";
+import { Link } from "react-router-dom";
 
 const AboutPage = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -48,9 +49,12 @@ const AboutPage = () => {
             </button>
             <div className="mr-2 mt-2 items-center flex gap-2 relative -top-8">
               <AboutMenu />
-              <button className="border-2 rounded-full p-3 hover:bg-slate-100">
+              <Link
+                to="/contact"
+                className="border-2 rounded-full p-3 hover:bg-slate-100"
+              >
                 <BiMessage />
-              </button>
+              </Link>
               <button className="border-2 p-3 w-20 bg-slate-500 text-slate-50 hover:bg-slate-600 rounded-full md:w-32">
                 Follow
               </button>
