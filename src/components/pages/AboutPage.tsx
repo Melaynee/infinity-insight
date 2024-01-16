@@ -2,9 +2,9 @@ import avatar from "../../assets/photo.jpeg";
 import banner from "../../assets/1500x500.jpg";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FaLink } from "react-icons/fa6";
-import { BsThreeDots } from "react-icons/bs";
 import { BiMessage } from "react-icons/bi";
 import { useState } from "react";
+import AboutMenu from "../AboutMenu";
 
 const AboutPage = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -33,26 +33,25 @@ const AboutPage = () => {
           <div className="">
             <img src={banner} alt="" className="" />
           </div>
-          <div className="flex justify-between relative lg:-top-16">
+          <div className="flex justify-between relative lg:-top-16 ">
             <button
               onClick={() => {
                 setShowModal(!showModal);
               }}
+              className=""
             >
               <img
                 src={avatar}
                 alt=""
-                className="w-28 rounded-full relative -top-12 left-4 border-4 border-white md:w-36 lg:w-72"
+                className="w-28 rounded-full relative -top-12 left-4 border-4 border-white  md:w-36 lg:w-72"
               />
             </button>
             <div className="mr-2 mt-2 items-center flex gap-2 relative -top-8">
-              <button className="border-2 rounded-full p-3">
-                <BsThreeDots />
-              </button>
-              <button className="border-2 rounded-full p-3">
+              <AboutMenu />
+              <button className="border-2 rounded-full p-3 hover:bg-slate-100">
                 <BiMessage />
               </button>
-              <button className="border-2 p-3 w-20 bg-slate-500 text-slate-50 rounded-full md:w-32">
+              <button className="border-2 p-3 w-20 bg-slate-500 text-slate-50 hover:bg-slate-600 rounded-full md:w-32">
                 Follow
               </button>
             </div>
