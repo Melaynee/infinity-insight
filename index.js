@@ -56,6 +56,7 @@ app.post("/auth", async (req, res) => {
       res.cookie("token", token).json({
         id: userDoc._id,
         email,
+        username: userDoc.username,
       });
     });
   } else {
@@ -69,7 +70,8 @@ app.get("/profile", async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, secret);
-    res.json(decoded);
+    const { email, _id, username } = await User.findById(decoded.id);
+    res.json({ email, _id, username });
   } catch (error) {
     return;
   }
