@@ -23,7 +23,6 @@ const LoginPage = () => {
       )
       .then((userInfo) => {
         setUserInfo(userInfo.data);
-        console.log(userInfo);
         toast.success("Login confirmed!");
         setTimeout(() => setRedirect(true), 1000);
       })
