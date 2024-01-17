@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../UserContext";
+import Logo from "./Logo";
+import NavAuthorized from "./NavAuthorized";
 
 const Header = () => {
   const userContext = useContext(UserContext);
@@ -22,35 +24,16 @@ const Header = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // Ensure that userContext is defined before accessing its properties
-  if (!userContext) {
-    return null; // Or handle the absence of context in some way
-  }
-
+  if (!userContext) return null;
   const { setUserInfo, userInfo } = userContext;
 
   const email = userInfo?.email;
 
-  const logout = () => {
-    axios.post("http://localhost:3334/logout", {}, { withCredentials: true });
-    setUserInfo(undefined);
-  };
-
   return (
     <header className="bg-slate-500 shadow-xl">
       <div className="container flex mx-auto justify-around py-2 items-center h-13 ">
-        <Link
-          to="/"
-          className="logo text-base md:text-2xl text-slate-100 font-bold"
-        >
-          Infinity Insight
-        </Link>
-        {(email && (
-          <nav className="flex text-base sm:text-xl text-slate-200 items-center gap-5 ">
-            <Link to={"/create"}>Create new post</Link>
-            <button onClick={logout}>Logout</button>
-          </nav>
-        )) || (
+        <Logo />
+        {(email && <NavAuthorized />) || (
           <nav className="flex text-base sm:text-xl text-slate-200 items-center gap-5 ">
             <Link to="/auth" className=" hover:text-slate-50">
               Sign In

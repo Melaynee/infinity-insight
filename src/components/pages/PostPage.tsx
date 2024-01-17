@@ -31,7 +31,7 @@ const PostPage = () => {
       <time className="ml-2 font-extralight italic">
         {formatISO9075(new Date(info.createdAt))}
       </time>
-      {userInfo?.id === info.author._id && (
+      {userInfo?._id === info.author._id && (
         <button className="ml-10 text-slate-600 hover:text-slate-500 italic bold">
           <Link to={`/edit/${info._id}`}>Edit</Link>
         </button>

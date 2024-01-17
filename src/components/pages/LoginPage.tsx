@@ -23,6 +23,7 @@ const LoginPage = () => {
       )
       .then((userInfo) => {
         setUserInfo(userInfo.data);
+        console.log(userInfo);
         toast.success("Login confirmed!");
         setTimeout(() => setRedirect(true), 1000);
       })
@@ -42,7 +43,6 @@ const LoginPage = () => {
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-slate-700">
           Sign in to your account
         </h2>
-        Toaster
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

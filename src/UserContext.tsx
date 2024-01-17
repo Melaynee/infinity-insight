@@ -2,12 +2,12 @@ import { ReactNode, createContext, useMemo, useState } from "react";
 
 interface UserInfo {
   email: string;
-  iat: number;
-  id: string;
+  username: string;
+  _id: string;
 }
 
 export interface UserContextProps {
-  userInfo: UserInfo | undefined;
+  userInfo?: UserInfo;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>;
 }
 
