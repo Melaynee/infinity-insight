@@ -11,9 +11,7 @@ import contactRoutes from "./routes/contact";
 import corsMiddleware from "./middlewares/cors";
 import errorHandlerMiddleware from "./middlewares/errorHandler";
 
-const mongodbUrl = process.env.MONGO_URL;
-
-const path = require("path");
+import path from "path";
 
 const app = express();
 
@@ -28,12 +26,13 @@ app.use(authRoutes);
 app.use(postRoutes);
 app.use(contactRoutes);
 
-if (mongodbUrl) {
-  mongoose
-    .connect(mongodbUrl)
-    .then(() => console.log("DB connected"))
-    .catch((error) => console.log(error));
-}
+mongoose
+  .connect(
+    process.env.MONGO_URL ??
+      "mongodb+srv://blog:Cmm9vCo4kxL7O4FS@cluster0.sf29n96.mongodb.net/"
+  )
+  .then(() => console.log("DB connected"))
+  .catch((error) => console.log(error));
 
 app.use(errorHandlerMiddleware);
 

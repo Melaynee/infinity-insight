@@ -2,27 +2,28 @@ import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
+import checkAuth, { AuthenticatedRequest } from "../middlewares/checkAuth";
 
 const router = express.Router();
 const salt = bcrypt.genSaltSync(10);
 const secret = process.env.JWT_SECRET ?? "9vCo4";
 
-interface DecodedToken {
-  email: string;
-  id: string;
-}
-
 // Registration
 router.post("/registration", async (req: Request, res: Response) => {
-  const { email, username, password } = req.body;
-
   try {
+    const { email, username, password } = req.body;
+
     const userDoc = await User.create({
       email,
       username,
-      password: bcrypt.hashSync(password, salt),
+      passwordHash: bcrypt.hashSync(password, salt),
     });
-    res.json(userDoc);
+
+    const token = jwt.sign({ _id: userDoc._id }, secret, {});
+
+    const { passwordHash, ...userData } = userDoc;
+
+    res.json({ ...userData, token });
   } catch (error) {
     res.status(400).json(error);
   }
@@ -30,63 +31,72 @@ router.post("/registration", async (req: Request, res: Response) => {
 
 // Login
 router.post("/auth", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
   try {
     const userDoc: IUser | null = await User.findOne({ email });
 
     if (!userDoc) {
-      return res.status(400).json("Wrong credentials");
+      return res.status(404).json("User not found");
     }
 
-    const salted_password = bcrypt.compareSync(password, userDoc.password);
+    const isValidPassword = await bcrypt.compareSync(
+      req.body.password,
+      userDoc.passwordHash
+    );
 
-    if (salted_password) {
-      jwt.sign(
-        { email, id: userDoc?._id },
-        secret,
-        {},
-        (error: Error | null, token: string | undefined) => {
-          if (error) {
-            res.status(500).json("Internal Server Error");
-          } else {
-            res.cookie("token", token).json({
-              id: userDoc?._id,
-              email,
-              username: userDoc?.username,
-            });
-          }
-        }
-      );
-    } else {
-      res.status(400).json({ error: "Wrong credentials" });
+    if (!isValidPassword) {
+      res.status(400).json("Wrong credentials");
     }
+
+    const token = jwt.sign(
+      {
+        email,
+        id: userDoc?._id,
+      },
+      secret,
+      {}
+    );
+
+    const { passwordHash, ...userData } = userDoc;
+
+    res.json({
+      ...userData,
+      token,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// Auth
-router.get("/profile", async (req: Request, res: Response) => {
-  const { token } = req.cookies;
-
+//
+router.get("/auth/me", checkAuth, async (req: AuthenticatedRequest, res) => {
   try {
-    const decoded: DecodedToken = jwt.verify(token, secret) as DecodedToken;
-    const userDoc: IUser | null = await User.findById(decoded.id);
+    const userDoc = await User.findById(req.userId);
 
-    if (userDoc?.email) {
-      const { email, _id, username } = userDoc;
-      res.json({ email, _id, username });
-    } else {
-      res.status(401).json("Unauthorized");
+    if (!userDoc) {
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
-  } catch (error) {
-    res.status(401).json({ error: "Unauthorized" });
+
+    const { passwordHash, ...userData } = userDoc;
+
+    res.json(userData);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Access denied",
+    });
   }
 });
 
 // Logout
 router.post("/logout", (req: Request, res: Response) => {
-  res.clearCookie("token", { path: "/" }).json("ok");
+  try {
+    res.json("Logout success");
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 export default router;
