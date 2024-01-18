@@ -21,9 +21,12 @@ router.post("/registration", async (req: Request, res: Response) => {
 
     const token = jwt.sign({ _id: userDoc._id }, secret, {});
 
-    const { passwordHash, ...userData } = userDoc;
-
-    res.json({ ...userData, token });
+    res.json({
+      id: userDoc._id,
+      email: userDoc.email,
+      username: userDoc.username,
+      token,
+    });
   } catch (error) {
     res.status(400).json(error);
   }
@@ -31,21 +34,23 @@ router.post("/registration", async (req: Request, res: Response) => {
 
 // Login
 router.post("/auth", async (req: Request, res: Response) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
   try {
     const userDoc: IUser | null = await User.findOne({ email });
 
     if (!userDoc) {
       return res.status(404).json("User not found");
     }
-
-    const isValidPassword = await bcrypt.compareSync(
-      req.body.password,
+    if (!userDoc.passwordHash) {
+      return res.status(400).json("Invalid password or user data");
+    }
+    const isValidPassword = await bcrypt.compare(
+      password,
       userDoc.passwordHash
     );
 
     if (!isValidPassword) {
-      res.status(400).json("Wrong credentials");
+      return res.status(400).json("Wrong credentials");
     }
 
     const token = jwt.sign(
@@ -57,14 +62,14 @@ router.post("/auth", async (req: Request, res: Response) => {
       {}
     );
 
-    const { passwordHash, ...userData } = userDoc;
-
     res.json({
-      ...userData,
+      id: userDoc._id,
+      email: userDoc.email,
+      username: userDoc.username,
       token,
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" + error });
   }
 });
 
@@ -81,7 +86,11 @@ router.get("/auth/me", checkAuth, async (req: AuthenticatedRequest, res) => {
 
     const { passwordHash, ...userData } = userDoc;
 
-    res.json(userData);
+    res.json({
+      id: userDoc._id,
+      email: userDoc.email,
+      username: userDoc.username,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({
