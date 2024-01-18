@@ -1,34 +1,23 @@
-import axios from "axios";
 import Post from "../Post";
-import { useEffect, useState } from "react";
-
-export interface PostProps {
-  _id: string;
-  author: {
-    _id: string;
-    username: string;
-  };
-  content: string;
-  createdAt: string;
-  summary: string;
-  cover: string;
-  title: string;
-  updatedAt: string;
-  __v: number;
-}
+import { useSelector } from "react-redux";
+import { IPost } from "../redux/slices/postSlice";
+import { PostLoadingSkeleton } from "../PostLoadingSkeleton";
+import { RootState } from "../redux/store";
+import useFetchPosts from "../hooks/useFetchPosts";
 
 const HomePage = () => {
-  const [posts, setPosts] = useState<PostProps[]>([]);
-  useEffect(() => {
-    axios.get("http://localhost:3334/post").then((response) => {
-      setPosts(response.data);
-    });
-  }, []);
+  useFetchPosts();
+  const { posts } = useSelector((state: RootState) => state.posts);
+
+  const isLoading = posts.status === "loading";
 
   return (
     <div className="container mx-auto grid">
-      {posts.length > 0 &&
-        posts.map((post) => <Post key={post._id} {...post} />)}
+      {isLoading
+        ? Array.from({ length: 5 }, (_, index) => (
+            <PostLoadingSkeleton key={index} />
+          ))
+        : posts.items.map((post: IPost) => <Post key={post._id} {...post} />)}
     </div>
   );
 };

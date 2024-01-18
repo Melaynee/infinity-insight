@@ -9,8 +9,17 @@ import PostPage from "./components/pages/PostPage";
 import EditPostPage from "./components/pages/EditPostPage";
 import AboutPage from "./components/pages/AboutPage";
 import ContactPage from "./components/pages/ContactPage";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchAuthMe } from "./components/redux/slices/auth";
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAuthMe());
+  }, [dispatch]);
+
   return (
     <UserContextProvider>
       <Routes>

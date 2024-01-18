@@ -1,43 +1,39 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import axios from "axios";
-import { UserContext, UserContextProps } from "../../UserContext";
-import toast, { Toaster } from "react-hot-toast";
+import { fetchAuth, selectIsAuth } from "../redux/slices/auth";
+import { AppDispatch } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+
+interface IParams {
+  email: string;
+  password: string;
+}
 
 const LoginPage = () => {
+  const isAuth = useSelector(selectIsAuth);
+  const dispatch = useDispatch<AppDispatch>();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
-  const { setUserInfo } = useContext(UserContext) as UserContextProps;
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await axios
-      .post(
-        "http://localhost:3334/auth",
-        {
-          email,
-          password,
-        },
-        { withCredentials: true }
-      )
-      .then((userInfo) => {
-        setUserInfo(userInfo.data);
-        toast.success("Login confirmed!");
-        setTimeout(() => setRedirect(true), 1000);
-      })
-      .catch((error) => {
-        toast.error("Login failed! " + error.response.data.message);
-      });
+    const params: IParams = {
+      email,
+      password,
+    };
+    const data = await dispatch(fetchAuth(params));
+    if (data.payload !== undefined) {
+      window.localStorage.setItem("token", data.payload.token);
+    }
   };
 
-  if (redirect) {
+  if (isAuth) {
     return <Navigate to={"/"} />;
   }
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <Toaster />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-slate-700">
           Sign in to your account

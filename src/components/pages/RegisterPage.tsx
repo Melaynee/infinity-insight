@@ -1,37 +1,41 @@
 import { useState } from "react";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRegister } from "../redux/slices/auth";
+import { AppDispatch } from "../redux/store";
+import { selectIsAuth } from "../redux/slices/auth";
+import { Navigate } from "react-router-dom";
 
 const Registration = () => {
+  const isAuth = useSelector(selectIsAuth);
+  const dispatch = useDispatch<AppDispatch>();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
   const register = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    await axios
-      .post("http://localhost:3334/registration", {
-        email,
-        username,
-        password,
-      })
-      .then(function () {
-        toast.success("Registration complete!");
-      })
-      .catch(function (error) {
-        toast.error("Registration failed!" + error);
-      });
+    const params = {
+      email,
+      password,
+      username,
+    };
+    const data = await dispatch(fetchRegister(params));
+    if (data.payload !== undefined) {
+      window.localStorage.setItem("token", data.payload.token);
+    }
   };
+
+  if (isAuth) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <Toaster />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-slate-700">
           Sign up to your account
         </h2>
-        Toaster
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
