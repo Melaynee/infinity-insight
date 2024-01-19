@@ -34,6 +34,7 @@ The MERN Light Posting Site is a web application built on the MERN (MongoDB, Exp
 - **Axios:** Used for making asynchronous requests to the server, facilitating smooth data retrieval.
 - **Tailwind CSS:** Enhances the styling with a utility-first CSS framework.
 - **TypeScript:** Adds static typing for a more robust and maintainable codebase.
+- **Redux Toolkit:** For state management in the React application.
 
 
 ## How to Use
