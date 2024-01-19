@@ -6,7 +6,7 @@ import Post, { IPost } from "../models/Post";
 
 const router = express.Router();
 const uploadMiddleware = multer({ dest: "./uploads" });
-const secret = process.env.JWT_SECRET;
+const secret = process.env.JWT_SECRET ?? "9vCo4";
 
 // Post create
 router.post(
@@ -21,7 +21,13 @@ router.post(
 
       await fs.rename(path, newPath);
 
-      const { token } = req.cookies;
+      const token = req.headers.authorization;
+
+      if (!token) {
+        return res.status(401).json({
+          message: "You are not authorized!",
+        });
+      }
       const decoded: any = jwt.verify(token, secret as jwt.Secret);
 
       const { title, summary, content } = req.body;
@@ -94,7 +100,12 @@ router.put(
         await fs.rename(path, newPath);
       }
 
-      const { token } = req.cookies;
+      const token = req.headers.authorization;
+      if (!token)
+        return res.status(400).json({
+          message: "You are not the author",
+        });
+
       const decoded: any = jwt.verify(token, secret as jwt.Secret);
 
       const { id, title, summary, content } = req.body;
