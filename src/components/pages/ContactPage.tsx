@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { Navigate } from "react-router-dom";
 
 const ContactPage = () => {
   const [email, setEmail] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const [redirect, setRedirect] = useState(false);
 
   const contact = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,11 +20,18 @@ const ContactPage = () => {
       })
       .then(() => {
         toast.success("Message successfully sended.");
+        setTimeout(() => {
+          setRedirect(true);
+        }, 1000);
       })
       .catch((error) => {
         toast.error(error.response.data.message);
       });
   };
+
+  if (redirect) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <>

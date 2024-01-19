@@ -1,7 +1,7 @@
 import Post from "../Post";
 import { useSelector } from "react-redux";
 import { IPost } from "../redux/slices/postSlice";
-import { PostLoadingSkeleton } from "../PostLoadingSkeleton";
+import { PostLoadingSkeleton } from "../skeletons/PostLoadingSkeleton";
 import { RootState } from "../redux/store";
 import useFetchPosts from "../hooks/useFetchPosts";
 

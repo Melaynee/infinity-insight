@@ -1,13 +1,15 @@
 import axios from "axios";
 import { formatISO9075 } from "date-fns";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { UserContext, UserContextProps } from "../../UserContext";
-import { PostProps } from "./HomePage";
+import { IPost } from "../redux/slices/postSlice";
+import { useSelector } from "react-redux";
+import PostPageLoadingSkeleton from "../skeletons/postPageLoadingSkeleton";
 
 const PostPage = () => {
-  const [info, setInfo] = useState<PostProps | null>(null);
-  const { userInfo } = useContext(UserContext) as UserContextProps;
+  const [info, setInfo] = useState<IPost | null>(null);
+  // const { userInfo } = useContext(UserContext) as UserContextProps;
+  const userInfo = useSelector((state) => state.auth.data);
 
   const { id } = useParams();
   useEffect(() => {
@@ -19,11 +21,7 @@ const PostPage = () => {
   }, []);
 
   if (!info) {
-    return (
-      <div className="100vw white font-bold text-center text-slate-900">
-        Loading...
-      </div>
-    );
+    return <PostPageLoadingSkeleton />;
   }
   return (
     <div className="container mx-auto my-10 font-poppins">
@@ -31,7 +29,7 @@ const PostPage = () => {
       <time className="ml-2 font-extralight italic">
         {formatISO9075(new Date(info.createdAt))}
       </time>
-      {userInfo?._id === info.author._id && (
+      {userInfo?.id === info.author._id && (
         <button className="ml-10 text-slate-600 hover:text-slate-500 italic bold">
           <Link to={`/edit/${info._id}`}>Edit</Link>
         </button>

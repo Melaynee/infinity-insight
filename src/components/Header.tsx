@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import NavAuthorized from "./NavAuthorized";
-import { useSelector } from "react-redux";
-import { selectIsAuth } from "./redux/slices/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAuthMe, selectIsAuth } from "./redux/slices/auth";
+import { useEffect } from "react";
 
 const Header = () => {
   const isAuth = useSelector(selectIsAuth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAuthMe());
+  }, [dispatch]);
 
   return (
     <header className="bg-slate-500 shadow-xl">

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../axios";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { Navigate, useParams } from "react-router-dom";
@@ -47,15 +47,14 @@ const EditPostPage = () => {
     data.set("summary", summary ?? "");
     data.set("content", content ?? "");
     data.set("id", id ?? "");
+    e.preventDefault();
 
     if (files?.[0]) {
       data.set("file", files[0]);
     }
 
-    e.preventDefault();
-
     await axios
-      .put("http://localhost:3334/post", data, { withCredentials: true })
+      .put("http://localhost:3334/post", data)
       .then(() => {
         toast.success("Edit confirmed!");
         setTimeout(() => setRedirect(true), 1000);

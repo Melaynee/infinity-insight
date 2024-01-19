@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import { fetchAuth, selectIsAuth } from "../redux/slices/auth";
 import { AppDispatch } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
 
 interface IParams {
   email: string;
@@ -23,6 +24,9 @@ const LoginPage = () => {
       password,
     };
     const data = await dispatch(fetchAuth(params));
+    if (!data.payload) {
+      toast.error("Incorrect email or password");
+    }
     if (data.payload !== undefined) {
       window.localStorage.setItem("token", data.payload.token);
     }
@@ -34,6 +38,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <Toaster />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-slate-700">
           Sign in to your account
@@ -89,7 +94,6 @@ const LoginPage = () => {
                 type="password"
                 autoComplete="current-password"
                 required
-                minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 pl-2"
